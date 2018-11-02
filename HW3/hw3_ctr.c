@@ -37,10 +37,20 @@ int main(int argc, const char* argv[]) {
         return EXIT_FAILURE;
     }
 
+    unsigned char paddedNonce[BLK_LEN];
     do {
-        bytes_read = fread(blk, 1, BLK_LEN, stdin);  
+        bytes_read = fread(blk, 1, BLK_LEN, stdin);
         if (bytes_read > 0) {
             // process bytes_read bytes
+            for (int i = 0; i < NOUNCE_LEN; i++)  // create a copy on the nonce
+              paddedNonce =[i] = nonce[i];
+
+            for(int i = NONCE_LEN; i < BLK_LEN; i++)  // add counter after the nonce
+                paddedNonce[i] = counter[i];
+
+            for (int i = 0; i < bytes_read; i++)  // time to XOR our padded nonce
+              
+            // end process btyes_read bytes
             fwrite(blk, 1, bytes_read, stdout);
         }
     } while (bytes_read == BLK_LEN);
